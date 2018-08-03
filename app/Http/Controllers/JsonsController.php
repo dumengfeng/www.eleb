@@ -443,15 +443,15 @@ class JsonsController extends Controller
             $this->send();
             return [
                 "status" => "true",
-                "message" => "添加成功",
-                "order_id" => $request->order_id,
+                "message" => "下单成功",
+                "order_id" => $O->id,
             ];
         } else {
             DB::rollBack();
             return [
                 "status" => "false",
-                "message" => "添加失败",
-                "order_id" => $request->order_id,
+                "message" => "下单失败",
+                "order_id" => $O->id,
             ];
         }
 
@@ -595,7 +595,8 @@ class JsonsController extends Controller
             }
             $totals += $totalCost;
             $A = [
-                'order_code' => $list->id,
+                'id'=>$list->id,
+                'order_code' => $list->sn,
                 'order_birth_time' => (string)$list->created_at,
                 'order_status' => $status,//状态
                 'shop_id' => $shop_id,
