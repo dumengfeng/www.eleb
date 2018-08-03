@@ -56,3 +56,6 @@ Route::get('/order','JsonsController@order');
 Route::post('/changePassword','JsonsController@changePassword');
 // 忘记密码接口forgetPassword
 Route::post('/forgetPassword','JsonsController@forgetPassword');
+//发邮件
+Route::get('/send','JsonsController@send');
+//短信提醒

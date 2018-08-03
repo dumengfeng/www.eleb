@@ -14,6 +14,7 @@ use App\SignatureHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Validator;
 
@@ -439,6 +440,7 @@ class JsonsController extends Controller
         }
         if ($O && $OG) {
             DB::commit();
+            $this->send();
             return [
                 "status" => "true",
                 "message" => "添加成功",
@@ -672,6 +674,14 @@ class JsonsController extends Controller
                 "status" => "true",
                 "message" => "修改成功"
             ];
+    }
+    //发邮件
+    public function send()
+    {
+        $rel =Mail::send('welcome',[],function ($message){
+            $message->from('2515354006@qq.com','dmf18990915963');
+            $message->to(['2515354006@qq.com'])->subject('客户下单了,请尽快处理');
+        });
     }
 
 }
