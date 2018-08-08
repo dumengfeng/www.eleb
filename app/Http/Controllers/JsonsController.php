@@ -21,9 +21,35 @@ use Illuminate\Support\Facades\Validator;
 class JsonsController extends Controller
 {
     //  // 获得商家列表接口
-    public function businessList()
+    public function businessList(Request $request)
     {
-        $businessList = Shops::select('id', 'shop_name', 'shop_img', 'shop_rating', 'brand', 'on_time', 'fengniao', 'bao', 'piao', 'zhun', 'start_send', 'send_cost', 'notice', 'discount')->get();
+//
+        $keyword = '';
+        if($request->keyword){
+            $cl = new \App\SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_EXTENDED2);
+            $cl->SetLimits(0, 1000);
+            $info = $request->keyword;
+            $res = $cl->Query($info, 'shop');//shopstore_search
+//            dd($res);
+            $value=[];
+            foreach ($res['matches'] as $re) {
+                $value[] = $re['id'];
+            }
+//            dd($value);
+            foreach ($value as $val){
+                $businessList[] = Shops::select('id', 'shop_name', 'shop_img', 'shop_rating', 'brand', 'on_time', 'fengniao', 'bao', 'piao', 'zhun', 'start_send', 'send_cost', 'notice', 'discount')->where('id',$val)->first();
+            }
+//            dd($res['matches']);
+
+
+//            $all = Member::where('username','like','%'.$keyword.'%')->paginate(5);//包含功能分页搜索
+        }else{
+            $businessList = Shops::select('id', 'shop_name', 'shop_img', 'shop_rating', 'brand', 'on_time', 'fengniao', 'bao', 'piao', 'zhun', 'start_send', 'send_cost', 'notice', 'discount')->get();
+        }
         foreach ($businessList as $val) {
             $val['distance'] = rand(2, 20);
             $val['estimate_time'] = 10;

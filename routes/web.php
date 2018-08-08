@@ -59,3 +59,16 @@ Route::post('/forgetPassword','JsonsController@forgetPassword');
 //发邮件
 Route::get('/send','JsonsController@send');
 //短信提醒
+
+//中文词典
+Route::get('/search',function (\Illuminate\Support\Facades\Request $request){
+    $cl = new \App\SphinxClient();
+    $cl->SetServer ( '127.0.0.1', 9312);
+    $cl->SetConnectTimeout ( 10 );
+    $cl->SetArrayResult ( true );
+    $cl->SetMatchMode ( SPH_MATCH_EXTENDED2);
+    $cl->SetLimits(0, 1000);
+    $info = request()->keyword;
+    $res = $cl->Query($info, 'shop');//shopstore_search
+    print_r($res);
+});
